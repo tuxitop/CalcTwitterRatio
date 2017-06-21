@@ -1,0 +1,17 @@
+{
+  "name": "CalcTwitterRatio",
+  "version": "1.0.0",
+  "description": "get twitter following count of people",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ali Mousavi",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "moment": "^2.18.1",
+    "twitter": "^1.7.1"
+  }
+}
