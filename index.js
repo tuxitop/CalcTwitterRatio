@@ -13,7 +13,7 @@
  *     output.csv: the csv file with the calculated data.
  *
  * How To Use:
- * 1. make a ".env" file with your keys and secret tokens from twitter:
+ * 1. make a '.env' file with your keys and secret tokens from twitter:
  *     CONSUMER_KEY=
  *     CONSUMER_SECRET=
  *     ACCESS_TOKEN_KEY=
@@ -26,7 +26,7 @@
 
 var Twitter = require('twitter');
 var fs = require('fs');
-var moment = require('moment')
+var moment = require('moment');
 
 // load the environment variables
 require('dotenv').config();
@@ -41,10 +41,10 @@ var tClient = new Twitter({
 
 // initial input file if its the first time you are running the script.
 // It should be a txt file with users on each line.
-var input = "./input.txt";
+var input = './input.txt';
 
 // path of the csv file
-var output = "./output.csv"
+var output = './output.csv';
 
 /**
  * parses a text input file for finding usernames
@@ -75,19 +75,21 @@ function parseInput(txtFile, cb) {
  * @param  {string} firstLine the first line of the csv file.
  */
 function saveCsv(obj, firstLine) {
-    var csv = firstLine + "\n";
+    var csv = firstLine + '\n';
     Object.keys(obj).forEach(function(key) {
         csv += key;
         obj[key].forEach(function(count) {
-            csv += "," + count;
+            csv += ',' + count;
         });
-        csv += "\n";
+        csv += '\n';
     });
-    fs.writeFile(output, csv, "utf8", function(err) {
+    fs.writeFile(output, csv, 'utf8', function(err) {
         if (err) {
             throw err;
         }
-    })
+
+        console.log('Successfully created: ' + output);
+    });
 }
 
 /**
@@ -99,7 +101,7 @@ function diffDays(date1, date2) {
     var startDate = moment(date1);
     var FinishDate = moment(date2);
 
-    return FinishDate.diff(startDate, "days");
+    return FinishDate.diff(startDate, 'days');
 }
 
 /**
@@ -118,42 +120,42 @@ function fetchUsersData(obj) {
         if (index < userList.length) {
             var userName = userList[index];
 
-            console.log("Fetching info: " + (index + 1) + "/" + userList.length);
+            console.log('Fetching info: ' + (index + 1) + '/' + userList.length);
 
-            tClient.get('users/show', {"screen_name": userName}, function(err, res) {
+            tClient.get('users/show', {'screen_name': userName}, function(err, res) {
                 if (err) {
                     console.error(JSON.stringify(err));
                 }
 
                 // following count
                 obj[userName].push(res.friends_count);
-                console.log("Found Following: " + userName + " - " + res.friends_count);
+                console.log('Found Following: ' + userName + ' - ' + res.friends_count);
 
                 // followers count
                 obj[userName].push(res.followers_count);
-                console.log("Found Followers: " + userName + " - " + res.followers_count);
+                console.log('Found Followers: ' + userName + ' - ' + res.followers_count);
 
                 // tweets count
                 obj[userName].push(res.statuses_count);
-                console.log("tweets: " + userName + " - " + res.statuses_count);
+                console.log('tweets: ' + userName + ' - ' + res.statuses_count);
 
                 // days from creating the account
                 var daysCreated = diffDays(new Date(res.created_at), new Date());
                 obj[userName].push(daysCreated);
-                console.log("Days Active:" + userName + " - " + daysCreated);
+                console.log('Days Active:' + userName + ' - ' + daysCreated);
 
                 // followers/following ratio
                 obj[userName].push(res.followers_count / res.friends_count);
 
                 // tweets/days ratio
-                obj[userName].push(res.statuses_count / today.diff(cdate, "days"));
+                obj[userName].push(res.statuses_count / daysCreated);
 
                 // call the function with the next user index.
                 fetchEachUser(index + 1);
             });
         } else {
             // save the data
-            var titles = "username,following,followers,tweets,activeDays,follower/following,tweets/days";
+            var titles = 'username,following,followers,tweets,activeDays,follower/following,tweets/days';
             saveCsv(obj, titles);
         }
     }
