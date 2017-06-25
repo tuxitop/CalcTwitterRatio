@@ -26,7 +26,6 @@
 
 var Twitter = require('twitter');
 var fs = require('fs');
-var moment = require('moment');
 
 // load the environment variables
 require('dotenv').config();
@@ -98,10 +97,11 @@ function saveCsv(obj, firstLine) {
  * @param  {Date Object} date2 finish date
  */
 function diffDays(date1, date2) {
-    var startDate = moment(date1);
-    var FinishDate = moment(date2);
+    // calculate miliseconds in between each date.
+    var diff = Math.abs(date2.getTime() - date1.getTime());
 
-    return FinishDate.diff(startDate, 'days');
+    // convert milliseconds to days and return. (1000 * 60 * 60 * 24 = 86400000)
+    return Math.round(diff / 86400000);
 }
 
 /**
